@@ -5,6 +5,7 @@ ENV PYTHONPATH=/app
 COPY requirements.txt requirements-dev.txt ./
 RUN pip install --no-cache-dir -r requirements-dev.txt
 COPY backend ./backend
+COPY frontend ./frontend
 COPY test ./test
 COPY pytest.ini ./pytest.ini
 CMD ["python", "-m", "pytest"]
