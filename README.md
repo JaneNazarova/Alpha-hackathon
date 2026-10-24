@@ -4,7 +4,9 @@ Backend MVP сервиса персонализированной новостн
 
 ## Состав
 
-- `backend/main.py` — HTTP API, CORS, единый безопасный обработчик внутренних ошибок, trace ID и Swagger.
+- `backend/main.py` — тонкая ASGI-точка входа.
+- `backend/app/` — сборка приложения, CORS/middleware и жизненный цикл старта.
+- `backend/api/` — общий API router, зависимости и отдельные route-модули для компаний, новостей, инсайтов и health.
 - `backend/models.py`, `backend/database.py` — SQLite-хранилище компаний, новостей, оценок ленты, инсайтов и вопросов.
 - `backend/services/company_data.py` — импорт CSV с сохранением неизвестных полей как `null`.
 - `backend/services/news.py` — асинхронный RSS-парсер, нормализация текста/дат и исключение точных дубликатов.
