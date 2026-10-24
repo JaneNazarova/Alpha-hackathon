@@ -2,6 +2,19 @@ import pytest
 
 from backend.api.routes import news as news_routes
 
+def test_frontend_is_served_with_static_assets(client):
+    page = client.get("/")
+    script = client.get("/static/app.js")
+    styles = client.get("/static/styles.css")
+
+    assert page.status_code == script.status_code == styles.status_code == 200
+    assert "альфа" in page.text
+    assert all(f'data-view="{view}"' in page.text for view in ("overview", "news", "company"))
+    assert 'id="promo-news-button"' in page.text
+    assert "user-menu" not in page.text
+    assert "company-card-menu" not in page.text
+    assert "refreshNews" in script.text
+    assert "--color-ink" in styles.text
 
 def test_health_reports_database_ready(client):
     response = client.get("/health")
