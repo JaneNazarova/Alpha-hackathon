@@ -1,0 +1,15 @@
+services:
+  backend:
+    build: .
+    container_name: alpha-hack-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: sqlite:////app/data/alpha_hack.db
+      COMPANIES_CSV_PATH: /app/data/companies.csv
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped

@@ -1,0 +1,1 @@
+Place organizer-provided company CSV at `data/companies.csv` (UTF-8 or UTF-8 with BOM). The file is ignored by Git because it may contain restricted case data. The backend imports `SYNTHETIC_U` and the documented company fields on first startup when the file is present. If it is absent, the API loads three explicitly synthetic demo profiles.
