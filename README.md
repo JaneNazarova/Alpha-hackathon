@@ -2,7 +2,7 @@
 
 Backend MVP сервиса персонализированной новостной аналитики для бизнеса. Реализован по зоне ответственности Backend Developer из ТЗ: FastAPI, SQLite, загрузка CSV и RSS, персональная лента, интерфейсы интеграции AI, сохранение инсайтов, вопросы, трассировка и Docker Compose.
 
-## Состав
+## Архитектура
 
 - `backend/main.py` — тонкая ASGI-точка входа.
 - `backend/app/` — сборка приложения, CORS/middleware и жизненный цикл старта.
@@ -24,6 +24,39 @@ docker compose up --build
 ```
 
 API: <http://localhost:8000>; Swagger: <http://localhost:8000/docs>; OpenAPI: <http://localhost:8000/openapi.json>.
+
+## Тесты
+
+Набор в `test/` использует отдельную временную SQLite-базу и не обращается к реальным RSS-сервисам. Он покрывает health, API компаний и новостей, ранжирование, обновление RSS, создание и кэширование инсайта, вопросы, trace, валидацию запросов, CSV-импорт, нормализацию RSS и дедупликацию.
+
+Запустить тесты в Docker:
+
+```bash
+docker compose --profile test run --build --rm tests
+```
+
+Собрать HTML coverage-отчёт в `test/coverage_html`:
+
+```bash
+docker compose --profile test run --build --rm tests python -m pytest --cov=backend --cov-report=html:test/coverage_html
+```
+
+Откройте `test/coverage_html/index.html` в браузере.
+
+Или установите dev-зависимости и выполните тесты локально:
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest
+```
+
+Для локального HTML coverage после установки dev-зависимостей используйте:
+
+```bash
+python -m pytest --cov=backend --cov-report=html:test/coverage_html
+```
+
+Отчёт открывается по пути `test/coverage_html/index.html` и исключён из Git.
 
 Для локального запуска без Docker:
 

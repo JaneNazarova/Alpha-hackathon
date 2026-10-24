@@ -1,4 +1,13 @@
 services:
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    profiles: ["test"]
+    environment:
+      DATABASE_URL: "sqlite:///:memory:"
+    volumes:
+      - ./test:/app/test
   backend:
     build: .
     container_name: alpha-hack-backend
@@ -8,7 +17,7 @@ services:
       - path: .env
         required: false
     environment:
-      DATABASE_URL: sqlite:////app/data/alpha_hack.db
+      DATABASE_URL: "sqlite:////app/data/alpha_hack.db"
       COMPANIES_CSV_PATH: /app/data/companies.csv
     volumes:
       - ./data:/app/data

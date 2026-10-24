@@ -35,6 +35,10 @@ def parse_date(value):
 async def fetch_rss(db: Session) -> dict:
     settings = get_settings()
     inserted, skipped, failures = 0, 0, []
+    # Sessions may disable autoflush; track this run's pending rows as well as
+    # rows already committed to storage so duplicates across feeds are skipped.
+    seen_urls = set(db.scalars(select(NewsArticle.url)).all())
+    seen_hashes = set(db.scalars(select(NewsArticle.content_hash)).all())
     async with httpx.AsyncClient(timeout=settings.request_timeout_seconds, follow_redirects=True,
                                  headers={"User-Agent": "AlphaHackNewsAnalytics/1.0 (RSS reader)"}) as client:
         for feed_url in settings.feeds:
@@ -60,8 +64,7 @@ async def fetch_rss(db: Session) -> dict:
                         skipped += 1
                         continue
                     content_hash = hashlib.sha256((title + " " + content).encode("utf-8")).hexdigest()
-                    exists = db.scalar(select(NewsArticle.id).where((NewsArticle.url == url) | (NewsArticle.content_hash == content_hash)))
-                    if exists:
+                    if url in seen_urls or content_hash in seen_hashes:
                         skipped += 1
                         continue
                     article = NewsArticle(id=str(uuid4()), title=title, content=content,
@@ -70,6 +73,8 @@ async def fetch_rss(db: Session) -> dict:
                         content_hash=content_hash, processing_status="processed")
                     article.category, article.facts = classify(article.title + " " + content)
                     db.add(article)
+                    seen_urls.add(url)
+                    seen_hashes.add(content_hash)
                     inserted += 1
             except (httpx.HTTPError, ET.ParseError, ValueError) as exc:
                 failures.append({"source": feed_url, "error": type(exc).__name__})

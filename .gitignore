@@ -9,3 +9,4 @@ data/*.csv
 !data/sample/README.md
 .pytest_cache/
 .ruff_cache/
+test/coverage_html/

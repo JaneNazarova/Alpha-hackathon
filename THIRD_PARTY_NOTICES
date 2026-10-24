@@ -4,5 +4,7 @@ Backend dependencies (their respective licenses apply):
 - SQLAlchemy — MIT License — https://github.com/sqlalchemy/sqlalchemy
 - Pydantic Settings — MIT License — https://github.com/pydantic/pydantic-settings
 - HTTPX — BSD 3-Clause License — https://github.com/encode/httpx
+- pytest — MIT License — https://github.com/pytest-dev/pytest
+- pytest-cov — MIT License — https://github.com/pytest-dev/pytest-cov
 
 Runtime news feeds are configured to use RSS endpoints published by the Bank of Russia. Feed content and source URLs remain attributed to their publishers. Confirm source terms and availability before public deployment.
