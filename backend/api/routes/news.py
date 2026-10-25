@@ -1,17 +1,21 @@
 import logging
+import json
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Query
 from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.api.dependencies import get_article_or_404, get_company_or_404
+from backend.api.dependencies import get_article_or_404, get_company_or_404, get_ml_dataset
 from backend.config import get_settings
 from backend.database import get_db
 from backend.models import NewsArticle
 from backend.schemas import NewsOut
 from backend.services.news import fetch_rss
 from backend.services.personalization import score_article
+from backend.services.ml_personalization import rank_articles
+from ml.dataset import CompanyDataset
+from ml.ranking import resolve_weights
 
 logger = logging.getLogger("alpha_backend.news")
 settings = get_settings()
@@ -29,10 +33,33 @@ def _news_payload(article: NewsArticle, score=None, reasons=None, factors=None):
 
 @router.get("/api/feed", response_model=list[NewsOut])
 def get_feed(company_id: str = Query(...), role: str = Query("ceo", pattern="^(ceo|cfo)$"),
-             limit: int = Query(50, ge=1, le=200), db: Session = Depends(get_db)):
+             limit: int = Query(50, ge=1, le=200), db: Session = Depends(get_db),
+             dataset: CompanyDataset | None = Depends(get_ml_dataset), weights: str | None = Query(None)):
+    articles = db.scalars(select(NewsArticle)).all()
+    selected_weights = None
+    if weights is not None:
+        try:
+            selected_weights = resolve_weights(json.loads(weights))
+        except (json.JSONDecodeError, TypeError, ValueError) as exc:
+            raise HTTPException(422, detail={
+                "code": "invalid_ranking_weights",
+                "message": "Укажите веса для всех семи факторов; их сумма должна быть равна 1.",
+            }) from exc
+    if dataset is not None:
+        try:
+            return rank_articles(dataset, company_id, role, articles, selected_weights)[:limit]
+        except KeyError as exc:
+            raise HTTPException(404, detail={"code": "company_not_found", "message": "Компания не найдена"}) from exc
+        except ValueError as exc:
+            raise HTTPException(409, detail={"code": "ambiguous_company_id", "message": "ID компании неоднозначен в исходных данных"}) from exc
+    if selected_weights is not None:
+        raise HTTPException(503, detail={
+            "code": "ml_dataset_unavailable",
+            "message": "Настройка весов доступна при подключённых CSV компаний.",
+        })
     company = get_company_or_404(db, company_id)
     rows = []
-    for article in db.scalars(select(NewsArticle)).all():
+    for article in articles:
         score, reasons, factors = score_article(company, article, role)
         rows.append((score, article, reasons, factors))
     rows.sort(key=lambda item: (item[0], item[1].published_at or item[1].fetched_at), reverse=True)
@@ -41,10 +68,18 @@ def get_feed(company_id: str = Query(...), role: str = Query("ceo", pattern="^(c
 
 
 @router.get("/api/news/{article_id}", response_model=NewsOut)
-def get_news(article_id: str, company_id: str | None = None, role: str = "ceo",
-             db: Session = Depends(get_db)):
+def get_news(article_id: str, company_id: str | None = None,
+             role: str = Query("ceo", pattern="^(ceo|cfo)$"),
+             db: Session = Depends(get_db), dataset: CompanyDataset | None = Depends(get_ml_dataset)):
     article = get_article_or_404(db, article_id)
     if company_id:
+        if dataset is not None:
+            try:
+                return rank_articles(dataset, company_id, role, [article])[0]
+            except KeyError as exc:
+                raise HTTPException(404, detail={"code": "company_not_found", "message": "Компания не найдена"}) from exc
+            except ValueError as exc:
+                raise HTTPException(409, detail={"code": "ambiguous_company_id", "message": "ID компании неоднозначен в исходных данных"}) from exc
         score, reasons, factors = score_article(get_company_or_404(db, company_id), article, role)
         return _news_payload(article, score, reasons, factors)
     return _news_payload(article)

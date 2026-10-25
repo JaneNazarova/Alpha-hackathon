@@ -1,5 +1,6 @@
 import asyncio
 from datetime import timezone
+from types import SimpleNamespace
 
 import httpx
 
@@ -85,6 +86,14 @@ def test_rss_fetch_saves_normalized_news_and_deduplicates(database, monkeypatch)
             return FakeResponse()
 
     monkeypatch.setattr("backend.services.news.httpx.AsyncClient", FakeAsyncClient)
+    monkeypatch.setattr(
+        "backend.services.news.get_settings",
+        lambda: SimpleNamespace(
+            feeds=["https://example.test/feed-1", "https://example.test/feed-2"],
+            max_feed_items=30,
+            request_timeout_seconds=1,
+        ),
+    )
     with database() as db:
         first = asyncio.run(fetch_rss(db))
         second = asyncio.run(fetch_rss(db))

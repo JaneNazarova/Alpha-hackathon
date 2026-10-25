@@ -9,12 +9,12 @@ def test_frontend_is_served_with_static_assets(client):
 
     assert page.status_code == script.status_code == styles.status_code == 200
     assert "альфа" in page.text
-    assert all(f'data-view="{view}"' in page.text for view in ("overview", "news", "company"))
-    assert 'id="promo-news-button"' in page.text
-    assert "user-menu" not in page.text
-    assert "company-card-menu" not in page.text
-    assert "refreshNews" in script.text
-    assert "--color-ink" in styles.text
+    assert all(f'id="{section}"' in page.text for section in ("overview", "feed", "company-profile", "ml-quality"))
+    assert 'id="refresh-button"' in page.text
+    assert "company-select" in page.text
+    assert 'id="ml-quality-button"' in page.text
+    assert "addEventListener(\"click\", loadMlQuality)" in script.text
+    assert "--ink" in styles.text
 
 def test_health_reports_database_ready(client):
     response = client.get("/health")
@@ -155,13 +155,14 @@ def test_insight_generation_uses_optional_ai_module_once(client, monkeypatch):
 
     calls = []
 
-    def fake_ai(profile, article, question):
-        calls.append((profile, article, question))
-        return {"what_happened": "Событие из AI", "bank_position": {"text": None, "source_ids": []},
-                "validation_status": "passed", "model_name": "allowed-model"}
+    def fake_agent(profile, article):
+        calls.append((profile, article))
+        return ({"what_happened": "Событие из AI", "bank_position": {"text": None, "source_ids": []},
+                 "validation_status": "passed", "model_name": "allowed-model"},
+                {"trace_id": "trace-test", "steps": [], "sources": [],
+                 "matched_factors": [], "validation_status": "passed"}, "allowed-model")
 
-    monkeypatch.setattr(insight_service, "_external", lambda *_args: fake_ai(
-        {"company_id": "SYNTHETIC_U_001"}, {"id": "news-rate"}, None))
+    monkeypatch.setattr(insight_service, "_agent_result", fake_agent)
     body = {"company_id": "SYNTHETIC_U_001", "article_id": "news-rate", "user_role": "ceo"}
     first = client.post("/api/insights", json=body)
     second = client.post("/api/insights", json=body)
@@ -171,6 +172,66 @@ def test_insight_generation_uses_optional_ai_module_once(client, monkeypatch):
     assert first.json()["validation_status"] == "passed"
     assert first.json()["model_name"] == "allowed-model"
     assert len(calls) == 1
+
+
+def test_profile_and_feed_use_indexed_ml_dataset(client):
+    from backend.api.dependencies import get_ml_dataset
+    from ml.dataset import CompanyDataset
+
+    dataset = CompanyDataset(
+        [
+            {"SYNTHETIC_U": "CSV_A", "MAINOKVED_CODE": "25.11", "MAINOKVED_NAME": "Производство",
+             "REGION": "Москва", "REVENUE_COMPANY": "1000000", "CL_PRODUCT_LOA_MARK": "1",
+             "FTS_FLAG": "1", "FTS_COUNTRY_NAME": "КИТАЙ", "GROUP_ID": "GROUP_X"},
+            {"SYNTHETIC_U": "CSV_B", "MAINOKVED_CODE": "47.19", "MAINOKVED_NAME": "Розничная торговля",
+             "REGION": "Санкт-Петербург", "CL_PRODUCT_LOA_MARK": "0", "FTS_FLAG": "0"},
+        ],
+        [{"PAYER": "CSV_A", "BENEFICIARY": "CSV_B", "PAY_AMT": "500", "PAY_CNT": "2"}],
+        [{"SYNTHETIC_F": "PERSON_1", "SYNTHETIC_U": "CSV_A"},
+         {"SYNTHETIC_F": "PERSON_1", "SYNTHETIC_U": "CSV_B"}],
+    )
+    client.app.dependency_overrides[get_ml_dataset] = lambda: dataset
+
+    profile = client.get("/api/companies/CSV_A", params={"role": "cfo"})
+    assert profile.status_code == 200
+    assert profile.json()["schema_version"] == "1.0"
+    assert profile.json()["has_loans"] is True
+    assert profile.json()["payments"]["outgoing_amount"] == 500
+    assert profile.json()["linked_company_ids"] == ["CSV_B"]
+
+    listed = client.get("/api/companies", params={"q": "Производство"})
+    assert listed.status_code == 200
+    assert {row["company_id"] for row in listed.json()} == {"CSV_A"}
+
+    feed_a = client.get("/api/feed", params={"company_id": "CSV_A", "role": "cfo"})
+    feed_b = client.get("/api/feed", params={"company_id": "CSV_B", "role": "cfo"})
+    assert feed_a.status_code == feed_b.status_code == 200
+    rate_a = next(item for item in feed_a.json() if item["id"] == "news-rate")
+    rate_b = next(item for item in feed_b.json() if item["id"] == "news-rate")
+    assert rate_a["algorithm_version"] == "rules-1.1"
+    assert rate_a["factor_values"]["finance"] == 1
+    assert rate_a["relevance_score"] > rate_b["relevance_score"]
+
+    insight = client.post("/api/insights", json={
+        "company_id": "CSV_A", "article_id": "news-rate", "user_role": "cfo"})
+    assert insight.status_code == 200
+    assert insight.json()["company_id"] == "CSV_A"
+
+
+def test_ml_profile_rejects_duplicate_ids_and_unknown_company(client):
+    from backend.api.dependencies import get_ml_dataset
+    from ml.dataset import CompanyDataset
+
+    dataset = CompanyDataset([
+        {"SYNTHETIC_U": "CSV_DUP", "MAINOKVED_CODE": "25.11", "GROUP_ID": "G1"},
+        {"SYNTHETIC_U": "CSV_DUP", "MAINOKVED_CODE": "47.19", "GROUP_ID": "G2"},
+    ])
+    client.app.dependency_overrides[get_ml_dataset] = lambda: dataset
+
+    assert client.get("/api/companies/CSV_DUP").status_code == 409
+    assert client.get("/api/companies/unknown").status_code == 404
+    listed = client.get("/api/companies")
+    assert all(row["company_id"] != "CSV_DUP" for row in listed.json())
 
 
 def test_news_refresh_token_is_optional_when_not_configured(client, monkeypatch):

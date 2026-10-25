@@ -3,17 +3,27 @@ import math
 from datetime import datetime, timezone
 
 from ml.config import ALGORITHM_VERSION, GEOGRAPHY, ROLE_TOPICS, WEIGHTS
+from ml.contracts import RankedNews
 from ml.deduplication import group_news
 from ml.news_processing import mentions, parse_datetime, process_news
+
+
+def resolve_weights(weights=None):
+    selected = dict(WEIGHTS if weights is None else weights)
+    if (set(selected) != set(WEIGHTS)
+            or any(isinstance(weight, bool) or not isinstance(weight, (float, int))
+                   or not math.isfinite(weight) or weight < 0
+                   for weight in selected.values())
+            or not math.isclose(sum(selected.values()), 1.)):
+        raise ValueError("Weights must cover all seven factors, be finite/nonnegative and sum to one")
+    return selected
 
 
 def rank_news(company_profile, articles, *, now=None, weights=None, deduplicate=True):
     profile = company_profile
     if not profile.get("company_id") or profile.get("user_role", "ceo") not in ROLE_TOPICS:
         raise ValueError("Profile needs company_id and ceo/cfo role")
-    selected = dict(WEIGHTS if weights is None else weights)
-    if set(selected) != set(WEIGHTS) or any(not isinstance(w, (float, int)) or not math.isfinite(w) or w < 0 for w in selected.values()) or not math.isclose(sum(selected.values()), 1.):
-        raise ValueError("Weights must cover all seven factors, be finite/nonnegative and sum to one")
+    selected = resolve_weights(weights)
     now = parse_datetime(now) if now is not None else datetime.now(timezone.utc)
     if now is None:
         raise ValueError("Invalid reference time")
@@ -74,11 +84,12 @@ def rank_news(company_profile, articles, *, now=None, weights=None, deduplicate=
         if priority:
             add("role", 1., "user_role", "Тема входит в приоритеты роли " + profile.get("user_role", "ceo").upper())
         contributions = {k: round(selected[k] * factors[k], 6) for k in selected}
-        results.append({**article, "company_id": profile["company_id"],
+        ranked = {**article, "company_id": profile["company_id"],
                         "relevance_score": round(sum(contributions.values()), 6),
                         "relevance_reasons": list(dict.fromkeys(reasons)) or ["Подтвержденная связь с бизнесом не найдена"],
                         "matched_factors": list(dict.fromkeys(matched)), "factor_values": factors,
-                        "factor_contributions": contributions, "evidence": evidence,
+                        "factor_contributions": contributions, "factor_weights": dict(selected), "evidence": evidence,
                         "algorithm_version": ALGORITHM_VERSION,
-                        "business_match": any(factors[k] > 0 for k in ("industry", "finance", "geography", "relations"))})
+                        "business_match": any(factors[k] > 0 for k in ("industry", "finance", "geography", "relations"))}
+        results.append(RankedNews.model_validate(ranked).model_dump(mode="json"))
     return sorted(results, key=lambda r: (-r["relevance_score"], r["article_id"]))

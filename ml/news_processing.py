@@ -7,6 +7,7 @@ from html import unescape
 from html.parser import HTMLParser
 
 from ml.config import GEOGRAPHY, MECHANISMS, SCHEMA_VERSION, SECTORS, TOPICS
+from ml.contracts import NewsFeatures, NewsInput
 
 
 class _Text(HTMLParser):
@@ -60,6 +61,12 @@ def parse_datetime(value):
 def process_news(article):
     if not isinstance(article, dict):
         raise ValueError("article must be a mapping")
+    raw = dict(article)
+    raw.setdefault("id", raw.get("article_id"))
+    # RSS parsers may already provide a datetime, while API/CSV records use ISO strings.
+    if isinstance(raw.get("published_at"), datetime):
+        raw["published_at"] = raw["published_at"].isoformat()
+    article = NewsInput.model_validate(raw).model_dump()
     title = clean_text(article.get("title"))
     content = clean_text(article.get("content") or article.get("summary"))
     if not title or not (article.get("id") or article.get("article_id")):
@@ -102,4 +109,4 @@ def process_news(article):
         result["uncertainties"].append("Source URL not supplied; source cannot be opened.")
     if not categories:
         result["uncertainties"].append("No topic matched the limited MVP vocabulary.")
-    return result
+    return NewsFeatures.model_validate(result).model_dump(mode="json")

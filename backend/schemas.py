@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 from pydantic import BaseModel, Field
 
 
@@ -13,8 +14,26 @@ class CompanyOut(BaseModel):
     has_leasing: bool | None = None
     has_guarantees: bool | None = None
     has_foreign_trade: bool | None = None
+    has_deposits: bool | None = None
+    has_factoring: bool | None = None
     trade_countries: list[str] = []
+    industry_tags: list[str] = []
+    role_priorities: list[str] = []
     group_id: str | None = None
+    company_age: str | None = None
+    business_stage: str | None = None
+    workers_fns: str | None = None
+    workers_spark: str | None = None
+    counterparty_ids: list[str] | None = None
+    linked_company_ids: list[str] | None = None
+    group_company_ids: list[str] = []
+    payments: dict[str, Any] | None = None
+    is_large_business: bool | None = None
+    invalid_fields: list[str] = []
+    field_sources: dict[str, dict[str, Any]] = {}
+    relation_sources: dict[str, str | None] = {}
+    uncertainties: list[str] = []
+    schema_version: str | None = None
     user_role: str = "ceo"
     profile_completeness: float = 0
     known_fields: list[str] = []
@@ -35,6 +54,24 @@ class NewsOut(BaseModel):
     relevance_score: float | None = None
     relevance_reasons: list[str] = []
     matched_factors: list[str] = []
+    categories: list[str] = []
+    facts: list[dict[str, Any]] = []
+    participants: list[str] = []
+    industry_tags: list[str] = []
+    geographies: list[str] = []
+    mechanisms: list[str] = []
+    indicators: list[dict[str, Any]] = []
+    temporal_context: dict[str, Any] = {}
+    uncertainties: list[str] = []
+    factor_values: dict[str, float] = {}
+    factor_contributions: dict[str, float] = {}
+    factor_weights: dict[str, float] = {}
+    evidence: list[dict[str, Any]] = []
+    algorithm_version: str | None = None
+    business_match: bool | None = None
+    event_id: str | None = None
+    duplicate_article_ids: list[str] = []
+    additional_sources: list[dict[str, Any]] = []
 
 
 class InsightCreate(BaseModel):

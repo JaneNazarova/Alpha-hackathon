@@ -1,1 +1,9 @@
-Place organizer-provided company CSV at `data/companies.csv` (UTF-8 or UTF-8 with BOM). The file is ignored by Git because it may contain restricted case data. The backend imports `SYNTHETIC_U` and the documented company fields on first startup when the file is present. If it is absent, the API loads three explicitly synthetic demo profiles.
+# Обезличенные данные кейса
+
+В каталоге лежат исходные CSV, используемые backend и ML:
+
+- `df_Uid_data_hack.csv` — атрибуты компаний.
+- `df_Uid_payment_hack.csv` — агрегаты платежей между плательщиками и получателями.
+- `df_Fid_Uid_link_hack.csv` — связи между синтетическими ID физических лиц и компаний.
+
+Backend читает и индексирует таблицы один раз при старте. Переопределить файлы можно через `COMPANIES_CSV_PATH`, `PAYMENTS_CSV_PATH` и `PERSON_LINKS_CSV_PATH`. Отсутствующие необязательные таблицы остаются неизвестными. Если CSV компаний не найден, API использует три явно синтетических демо-профиля.
