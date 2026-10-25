@@ -1,0 +1,27 @@
+date,model,prompt_tokens,completion_tokens,status,finish_reason,note
+2026-10-24,z-ai/glm-5.3-flash,24,365,200,stop,тест reasoning-модели
+2026-10-25,z-ai/glm-5.3-flash,1783,2958,200,stop,news_rate/A_loans_oil
+2026-10-25,z-ai/glm-5.3-flash,1781,3000,200,length,news_rate/B_no_loans_retail
+2026-10-25,z-ai/glm-5.3-flash,1781,3000,200,length,news_rate/B_no_loans_retail retry
+2026-10-25,z-ai/glm-5.3-flash,1806,4294,200,stop,news_rate/A_loans_oil
+2026-10-25,z-ai/glm-5.3-flash,1804,2752,200,stop,news_rate/B_no_loans_retail
+2026-10-25,z-ai/glm-5.3-flash,1931,5074,200,stop,news_rate/A_loans_oil
+2026-10-25,z-ai/glm-5.3-flash,1929,2310,200,stop,news_rate/B_no_loans_retail
+2026-10-25,google/gemma-4-26b-a4b-it,81,5,200,stop,classify
+2026-10-25,z-ai/glm-5.3-flash,1877,3028,200,stop,news_rate/agent_try0
+2026-10-25,z-ai/glm-5.3-flash,1875,4253,200,stop,news_rate/agent_try0
+2026-10-25,google/gemma-4-26b-a4b-it,89,4,200,stop,classify
+2026-10-25,z-ai/glm-5.3-flash,1857,2337,200,stop,news_macro/agent_try0
+2026-10-25,z-ai/glm-5.3-flash,1855,3278,200,stop,news_macro/agent_try0
+2026-10-25,z-ai/glm-5.3-flash,1263,850,200,stop,ask/news_rate
+2026-10-25,z-ai/glm-5.3-flash,1267,583,200,stop,ask/news_rate
+2026-10-25,z-ai/glm-5.3-flash,1309,688,200,stop,ask/news_rate
+2026-10-25,z-ai/glm-5.3-flash,1313,250,200,stop,ask/news_rate
+2026-10-25,z-ai/glm-5.3-flash,1882,6000,200,length,news_rate/agent_try0
+2026-10-25,z-ai/glm-5.3-flash,2314,1097,200,stop,news_rate/agent_try1
+2026-10-25,z-ai/glm-5.3-flash,1862,5286,200,stop,news_macro/agent_try02026-10-25,google/gemma-4-26b-a4b-it,82,5,200,stop,classify
+2026-10-25,z-ai/glm-5.3-flash,1914,2685,200,stop,news_rate/agent_try0
+2026-10-25,z-ai/glm-5.3-flash,1914,2797,200,stop,news_rate/agent_try0
+2026-10-25,z-ai/glm-5.3-flash,1914,4822,200,stop,news_rate/agent_try0
+2026-10-25,z-ai/glm-5.3-flash,1914,2475,200,stop,news_rate/agent_try0
+2026-10-25,z-ai/glm-5.3-flash,1914,4199,200,stop,news_rate/agent_try0
