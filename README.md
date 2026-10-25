@@ -24,6 +24,7 @@ docker compose up --build
 ```
 
 API: <http://localhost:8000>; Swagger: <http://localhost:8000/docs>; OpenAPI: <http://localhost:8000/openapi.json>.
+Веб-интерфейс откройте по адресу <http://localhost:8000>: там доступны профиль компании, персональная новостная лента, обновление RSS и создание инсайта с контекстными вопросами. Отдельная сборка frontend и установка npm-зависимостей не нужны.
 
 ## Тесты
 
