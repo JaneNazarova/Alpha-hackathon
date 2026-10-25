@@ -1,0 +1,328 @@
+{
+  "kind": "synthetic_author_labeled_regression_set",
+  "reference_time": "2026-10-24T12:00:00+00:00",
+  "user_role": "ceo",
+  "labeling": {
+    "author": "coding assistant; independent expert review pending",
+    "scale": {
+      "0": "no evidenced relevance",
+      "1": "weak/general relevance",
+      "2": "relevant",
+      "3": "directly relevant"
+    },
+    "method": "Explicit editorial grades per company/news pair. Not generated from rank scores. Cases constructed alongside rules; no independent holdout claim.",
+    "chronology": "Publication days assigned by fixed random seed 2026 independently of grades; fictional dates."
+  },
+  "companies": [
+    {
+      "SYNTHETIC_U": "SYNTHETIC_U_MFG",
+      "MAINOKVED_NAME": "Производство металлических конструкций",
+      "MAINOKVED_CODE": "25.11",
+      "REGION": "Москва",
+      "CITY": "Москва",
+      "REVENUE_COMPANY": "21000000000",
+      "CL_PRODUCT_LOA_MARK": "1",
+      "CL_PRODUCT_LEA_MARK": "1",
+      "FTS_FLAG": "1",
+      "FTS_COUNTRY_NAME": "Китай",
+      "CL_PRODUCT_DEP_MARK": "0",
+      "GROUP_ID": "DEMO_G1"
+    },
+    {
+      "SYNTHETIC_U": "SYNTHETIC_U_RETAIL",
+      "MAINOKVED_NAME": "Розничная торговля",
+      "MAINOKVED_CODE": "47.19",
+      "REGION": "Санкт-Петербург",
+      "REVENUE_COMPANY": "18000000000",
+      "CL_PRODUCT_LOA_MARK": "0",
+      "CL_PRODUCT_GAR_MARK": "1",
+      "CL_PRODUCT_DEP_MARK": "1",
+      "FTS_FLAG": "0"
+    },
+    {
+      "SYNTHETIC_U": "SYNTHETIC_U_AGRO",
+      "MAINOKVED_NAME": "Выращивание зерновых культур",
+      "MAINOKVED_CODE": "01.11",
+      "REGION": "Краснодарский край",
+      "REVENUE_COMPANY": null,
+      "CL_PRODUCT_LOA_MARK": null,
+      "CL_PRODUCT_LEA_MARK": "1",
+      "FTS_FLAG": "1",
+      "FTS_COUNTRY_NAME": "Турция"
+    }
+  ],
+  "articles": [
+    {
+      "id": "demo_01",
+      "title": "ЦБ повысил ключевую ставку до 15%",
+      "content": "Решение Банка России меняет условия кредитного финансирования.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_01",
+      "published_at": "2026-10-05T09:00:00+00:00"
+    },
+    {
+      "id": "demo_02",
+      "title": "Металлургические заводы увеличили выпуск",
+      "content": "Промышленное производство металлических конструкций расширяется в Москве.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_02",
+      "published_at": "2026-10-12T09:00:00+00:00"
+    },
+    {
+      "id": "demo_03",
+      "title": "Китай изменил правила импортных поставок",
+      "content": "Новые таможенные требования для поставок промышленного оборудования из Китая.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_03",
+      "published_at": "2026-10-07T09:00:00+00:00"
+    },
+    {
+      "id": "demo_04",
+      "title": "Лизинг оборудования: новые процентные условия",
+      "content": "Ставки финансирования лизинговых продуктов изменились для заводов.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_04",
+      "published_at": "2026-10-06T09:00:00+00:00"
+    },
+    {
+      "id": "demo_05",
+      "title": "Москва обновила требования к промышленным площадкам",
+      "content": "Закон регулирует деятельность производственных предприятий Москвы.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_05",
+      "published_at": "2026-10-23T09:00:00+00:00"
+    },
+    {
+      "id": "demo_06",
+      "title": "Розничные магазины увеличили продажи",
+      "content": "Потребительский спрос поддерживает розничную торговлю Санкт-Петербурга.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_06",
+      "published_at": "2026-10-21T09:00:00+00:00"
+    },
+    {
+      "id": "demo_07",
+      "title": "Санкт-Петербург вводит правила для магазинов",
+      "content": "Требования к розничной торговле и налоговой отчетности изменятся.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_07",
+      "published_at": "2026-10-03T09:00:00+00:00"
+    },
+    {
+      "id": "demo_08",
+      "title": "Банковские гарантии для торговых контрактов",
+      "content": "Новые требования закона к банковским гарантиям участников розничной торговли.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_08",
+      "published_at": "2026-10-09T09:00:00+00:00"
+    },
+    {
+      "id": "demo_09",
+      "title": "Дефицит кадров в розничной торговле",
+      "content": "В Санкт-Петербурге растут зарплаты сотрудников магазинов.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_09",
+      "published_at": "2026-10-02T09:00:00+00:00"
+    },
+    {
+      "id": "demo_10",
+      "title": "Потребительские сети расширяют логистику",
+      "content": "Розничная торговля инвестирует в поставки товаров и складские мощности.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_10",
+      "published_at": "2026-10-01T09:00:00+00:00"
+    },
+    {
+      "id": "demo_11",
+      "title": "Урожай пшеницы в Краснодарском крае вырос",
+      "content": "Аграрные предприятия Кубани увеличили сбор зерна.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_11",
+      "published_at": "2026-10-20T09:00:00+00:00"
+    },
+    {
+      "id": "demo_12",
+      "title": "Турция изменила правила импорта зерна",
+      "content": "Экспортные поставки сельскохозяйственной продукции столкнулись с новыми пошлинами.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_12",
+      "published_at": "2026-10-19T09:00:00+00:00"
+    },
+    {
+      "id": "demo_13",
+      "title": "Сельское хозяйство: лизинг техники",
+      "content": "Новые ставки финансирования лизинга сельскохозяйственной техники.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_13",
+      "published_at": "2026-10-10T09:00:00+00:00"
+    },
+    {
+      "id": "demo_14",
+      "title": "Краснодарский край расширяет аграрные перевозки",
+      "content": "Логистика и экспорт зерна через порты Кубани получили новые маршруты.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_14",
+      "published_at": "2026-10-15T09:00:00+00:00"
+    },
+    {
+      "id": "demo_15",
+      "title": "Турецкие покупатели увеличили закупки пшеницы",
+      "content": "Спрос на урожай аграрных компаний вырос, экспорт расширяется.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_15",
+      "published_at": "2026-10-13T09:00:00+00:00"
+    },
+    {
+      "id": "demo_16",
+      "title": "Валютные расчеты в юанях изменились",
+      "content": "Курс юаня и условия расчетов с Китаем изменились для импортеров.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_16",
+      "published_at": "2026-10-16T09:00:00+00:00"
+    },
+    {
+      "id": "demo_17",
+      "title": "ВВП России: опубликована новая оценка",
+      "content": "Макроэкономика показывает слабую динамику потребления.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_17",
+      "published_at": "2026-10-14T09:00:00+00:00"
+    },
+    {
+      "id": "demo_18",
+      "title": "Открылась выставка современной живописи",
+      "content": "Музей представил новую экспозицию картин.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_18",
+      "published_at": "2026-10-18T09:00:00+00:00"
+    },
+    {
+      "id": "demo_19",
+      "title": "Команда выиграла футбольный турнир",
+      "content": "Финальный матч завершился победой хозяев.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_19",
+      "published_at": "2026-10-08T09:00:00+00:00"
+    },
+    {
+      "id": "demo_20",
+      "title": "Астрономы нашли новую планету",
+      "content": "Телескоп получил снимки далекой звездной системы.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_20",
+      "published_at": "2026-10-24T09:00:00+00:00"
+    },
+    {
+      "id": "demo_21",
+      "title": "Новые правила защиты лесных животных",
+      "content": "В заповеднике изменили порядок посещения туристами.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_21",
+      "published_at": "2026-10-22T09:00:00+00:00"
+    },
+    {
+      "id": "demo_22",
+      "title": "Строительство жилого квартала в Индии",
+      "content": "Застройщик объявил о завершении нового проекта.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_22",
+      "published_at": "2026-10-17T09:00:00+00:00"
+    },
+    {
+      "id": "demo_23",
+      "title": "Программисты создали образовательную игру",
+      "content": "Приложение помогает изучать геометрию.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_23",
+      "published_at": "2026-10-11T09:00:00+00:00"
+    },
+    {
+      "id": "demo_24",
+      "title": "Фестиваль кино объявил победителей",
+      "content": "Зрители выбрали лучший документальный фильм.",
+      "source_name": "Синтетическая редакция (вымышленный пример)",
+      "source_url": "https://example.invalid/news/demo_24",
+      "published_at": "2026-10-04T09:00:00+00:00"
+    }
+  ],
+  "labels": {
+    "SYNTHETIC_U_MFG": {
+      "demo_01": 3,
+      "demo_02": 3,
+      "demo_03": 3,
+      "demo_04": 3,
+      "demo_05": 3,
+      "demo_06": 0,
+      "demo_07": 0,
+      "demo_08": 0,
+      "demo_09": 0,
+      "demo_10": 1,
+      "demo_11": 0,
+      "demo_12": 1,
+      "demo_13": 2,
+      "demo_14": 0,
+      "demo_15": 1,
+      "demo_16": 3,
+      "demo_17": 1,
+      "demo_18": 0,
+      "demo_19": 0,
+      "demo_20": 0,
+      "demo_21": 0,
+      "demo_22": 0,
+      "demo_23": 0,
+      "demo_24": 0
+    },
+    "SYNTHETIC_U_RETAIL": {
+      "demo_01": 2,
+      "demo_02": 0,
+      "demo_03": 0,
+      "demo_04": 1,
+      "demo_05": 0,
+      "demo_06": 3,
+      "demo_07": 3,
+      "demo_08": 3,
+      "demo_09": 3,
+      "demo_10": 3,
+      "demo_11": 0,
+      "demo_12": 0,
+      "demo_13": 1,
+      "demo_14": 0,
+      "demo_15": 0,
+      "demo_16": 0,
+      "demo_17": 1,
+      "demo_18": 0,
+      "demo_19": 0,
+      "demo_20": 0,
+      "demo_21": 0,
+      "demo_22": 0,
+      "demo_23": 0,
+      "demo_24": 0
+    },
+    "SYNTHETIC_U_AGRO": {
+      "demo_01": 2,
+      "demo_02": 0,
+      "demo_03": 1,
+      "demo_04": 2,
+      "demo_05": 0,
+      "demo_06": 0,
+      "demo_07": 0,
+      "demo_08": 0,
+      "demo_09": 0,
+      "demo_10": 1,
+      "demo_11": 3,
+      "demo_12": 3,
+      "demo_13": 3,
+      "demo_14": 3,
+      "demo_15": 3,
+      "demo_16": 1,
+      "demo_17": 1,
+      "demo_18": 0,
+      "demo_19": 0,
+      "demo_20": 0,
+      "demo_21": 0,
+      "demo_22": 0,
+      "demo_23": 0,
+      "demo_24": 0
+    }
+  }
+}
