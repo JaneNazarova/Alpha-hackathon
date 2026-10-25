@@ -3,3 +3,8 @@ uvicorn[standard]==0.34.0
 SQLAlchemy==2.0.38
 pydantic-settings==2.8.1
 httpx==0.28.1
+
+# AI-часть
+pydantic>=2.0
+requests==2.32.3
+python-dotenv==1.0.1
