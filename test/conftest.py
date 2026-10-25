@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from backend.app.application import create_app
+from backend.api.dependencies import get_ml_dataset
 from backend.database import Base, get_db
 from backend.models import Company, NewsArticle
 
@@ -24,6 +25,7 @@ def database(tmp_path, monkeypatch):
 
     monkeypatch.setattr(lifespan_module, "engine", engine)
     monkeypatch.setattr(lifespan_module, "SessionLocal", session_factory)
+    monkeypatch.setattr(lifespan_module, "load_company_dataset", lambda: None)
 
     with session_factory() as db:
         db.add_all([
@@ -68,6 +70,7 @@ def client(database):
             db.close()
 
     app.dependency_overrides[get_db] = override_get_db
+    app.dependency_overrides[get_ml_dataset] = lambda: None
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()

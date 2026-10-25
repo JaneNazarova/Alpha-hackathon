@@ -10,7 +10,9 @@ class Settings(BaseSettings):
     request_timeout_seconds: float = 8.0
     max_feed_items: int = 30
     news_refresh_token: str | None = None
-    companies_csv_path: str = "data/companies.csv"
+    companies_csv_path: str = "data/sample/df_Uid_data_hack.csv"
+    payments_csv_path: str = "data/sample/df_Uid_payment_hack.csv"
+    person_links_csv_path: str = "data/sample/df_Fid_Uid_link_hack.csv"
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     @property

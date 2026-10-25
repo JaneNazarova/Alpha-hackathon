@@ -18,7 +18,9 @@ services:
         required: false
     environment:
       DATABASE_URL: "sqlite:////app/data/alpha_hack.db"
-      COMPANIES_CSV_PATH: /app/data/companies.csv
+      COMPANIES_CSV_PATH: /app/data/sample/df_Uid_data_hack.csv
+      PAYMENTS_CSV_PATH: /app/data/sample/df_Uid_payment_hack.csv
+      PERSON_LINKS_CSV_PATH: /app/data/sample/df_Fid_Uid_link_hack.csv
     volumes:
       - ./data:/app/data
     restart: unless-stopped

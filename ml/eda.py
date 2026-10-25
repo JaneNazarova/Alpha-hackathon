@@ -10,9 +10,14 @@ from ml.data_access import boolean, iter_csv, number
 
 
 def describe(rows, key=None, *, observe=None, duplicate_rows=False):
-    counts, numeric, invalid_flags = {}, {}, Counter()
+    counts, numeric, unique_values, capped_columns = {}, {}, {}, set()
+    nonmissing, invalid_flags = Counter(), Counter()
     revenue, n, fingerprints = [], 0, set()
     flag_columns = {c for f, c in FIELDS.items() if f.startswith('has_')}
+    top_value_columns = {'MAINOKVED_CODE', 'MAINOKVED_NAME', 'REGION', 'FTS_COUNTRY_NAME',
+                         'COMPANY_AGE_YEARS_GRADATION', 'ECO_MARK_LABEL', 'FTS_FLAG', 'FACTORING_MARK'}
+    top_value_columns.update(c for f, c in FIELDS.items() if f.startswith('has_'))
+    exact_unique_limit = 25_000
     for row in rows:
         n += 1
         if observe:
@@ -20,11 +25,21 @@ def describe(rows, key=None, *, observe=None, duplicate_rows=False):
         if duplicate_rows:
             fingerprints.add(hashlib.sha256(json.dumps(row, sort_keys=True, ensure_ascii=False).encode()).digest())
         for column, value in row.items():
-            if column not in counts:
-                counts[column], numeric[column] = Counter(), True
+            if column not in numeric:
+                numeric[column], unique_values[column] = True, set()
             if value is None:
                 continue
-            counts[column][value] += 1
+            nonmissing[column] += 1
+            if column in top_value_columns or column == key:
+                counts.setdefault(column, Counter())[value] += 1
+            distinct = unique_values[column]
+            if column == key:
+                distinct.add(value)
+            elif value not in distinct:
+                if len(distinct) < exact_unique_limit:
+                    distinct.add(value)
+                else:
+                    capped_columns.add(column)
             value_num = number(value)
             if value_num is None:
                 numeric[column] = False
@@ -33,11 +48,14 @@ def describe(rows, key=None, *, observe=None, duplicate_rows=False):
             if column in flag_columns and boolean(value) is None:
                 invalid_flags[column] += 1
     result = {'rows': n, 'columns': {}, 'key': key}
-    for column, counter in counts.items():
-        known = sum(counter.values())
+    for column in numeric:
+        counter = counts.get(column, Counter())
+        known = nonmissing[column]
         stats = {'missing': n-known, 'missing_fraction': (n-known)/n if n else 0.,
-                 'unique': len(counter), 'inferred_type': 'numeric' if known and numeric[column] else 'categorical_or_text'}
-        if column in {'MAINOKVED_CODE', 'MAINOKVED_NAME', 'REGION', 'FTS_COUNTRY_NAME', 'COMPANY_AGE_YEARS_GRADATION', 'ECO_MARK_LABEL'} or column.startswith('CL_PRODUCT_') or column in {'FTS_FLAG', 'FACTORING_MARK'}:
+                 'unique': len(unique_values[column]), 'inferred_type': 'numeric' if known and numeric[column] else 'categorical_or_text'}
+        if column in capped_columns:
+            stats['unique_is_capped'] = True
+        if column in top_value_columns:
             stats['top_values'] = counter.most_common(15)
         if column in flag_columns:
             stats['invalid_booleans'] = invalid_flags[column]
@@ -52,7 +70,7 @@ def describe(rows, key=None, *, observe=None, duplicate_rows=False):
         result['columns'][column] = stats
     if key:
         counter = counts.get(key, {})
-        result['key_quality'] = {'missing': n-sum(counter.values()), 'unique': len(counter),
+        result['key_quality'] = {'missing': n-nonmissing.get(key, 0), 'unique': len(unique_values.get(key, ())),
                                  'duplicate_rows': sum(v-1 for v in counter.values()),
                                  'duplicate_ids': sum(v>1 for v in counter.values())}
     if duplicate_rows:

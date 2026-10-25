@@ -17,6 +17,10 @@ LOG_PATH = Path("llm_log.csv")
 LOG_HEADER = ["date", "model", "prompt_tokens", "completion_tokens", "status", "finish_reason", "note"]
 
 
+class LLMConfigurationError(RuntimeError):
+    """Raised when the AI provider cannot be called because settings are missing."""
+
+
 def _cache_key(model, messages, max_tokens):
     raw = json.dumps({"m": model, "msg": messages, "t": max_tokens}, ensure_ascii=False, sort_keys=True)
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
@@ -35,7 +39,7 @@ def _log(model, usage, status, finish_reason, note=""):
 def chat(model, messages, max_tokens=3000, use_cache=True, note=""):
     """Возвращает dict: content, finish_reason, usage. Успешные ответы с finish_reason=stop кэшируются."""
     if not API_KEY or not BASE_URL:
-        raise RuntimeError("Проверьте .env: LLM_API_KEY и LLM_BASE_URL")
+        raise LLMConfigurationError("LLM_API_KEY and LLM_BASE_URL must be configured")
 
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     path = CACHE_DIR / f"{_cache_key(model, messages, max_tokens)}.json"

@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 
 from backend.config import get_settings
 from backend.models import NewsArticle
+from ml.news_processing import process_news
 
 
 def clean_html(value: str) -> str:
@@ -67,11 +68,16 @@ async def fetch_rss(db: Session) -> dict:
                     if url in seen_urls or content_hash in seen_hashes:
                         skipped += 1
                         continue
-                    article = NewsArticle(id=str(uuid4()), title=title, content=content,
-                        summary=content[:400], source_name="Банк России" if "cbr.ru" in feed_url else feed_url,
-                        url=url, published_at=parse_date(values.get("pubdate") or values.get("published") or values.get("updated")),
-                        content_hash=content_hash, processing_status="processed")
-                    article.category, article.facts = classify(article.title + " " + content)
+                    published_at = parse_date(values.get("pubdate") or values.get("published") or values.get("updated"))
+                    source_name = "Банк России" if "cbr.ru" in feed_url else feed_url
+                    features = process_news({"id": str(uuid4()), "title": title, "content": content,
+                        "summary": content[:400], "source_name": source_name, "source_url": url,
+                        "published_at": published_at})
+                    article = NewsArticle(id=features["id"], title=features["title"], content=features["content"],
+                        summary=features["summary"], source_name=features["source_name"], url=url,
+                        published_at=published_at, content_hash=content_hash,
+                        category=features["category"], processing_status=features["processing_status"],
+                        facts=features["facts"])
                     db.add(article)
                     seen_urls.add(url)
                     seen_hashes.add(content_hash)

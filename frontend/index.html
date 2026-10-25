@@ -3,183 +3,211 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#f5f4f2">
-    <meta name="description" content="Персональная новостная аналитика для бизнеса">
-    <title>Альфа — бизнес-аналитика</title>
+    <meta name="theme-color" content="#f7f6f3">
+    <meta name="description" content="Новости и аналитика для бизнеса на основе профиля компании">
+    <title>Деловой обзор — Альфа</title>
     <link rel="stylesheet" href="/static/styles.css">
-    <script src="/static/app.js" defer></script>
+    <script type="module" src="/static/app.js"></script>
   </head>
   <body>
-    <div class="app-shell">
-      <aside class="sidebar">
-        <a class="brand" href="/" aria-label="Альфа — главная">
-          <span class="brand-mark">а</span>
-          <span class="brand-name">альфа<span>бизнес</span></span>
-        </a>
+    <a class="skip-link" href="#main-content">Перейти к содержимому</a>
+    <header class="site-header">
+      <a class="brand" href="#overview" aria-label="Альфа Бизнес — обзор">
+        <span class="brand-mark" aria-hidden="true">а</span>
+        <span class="brand-copy"><strong>альфа</strong><span>бизнес</span></span>
+      </a>
+      <nav class="primary-nav" aria-label="Основная навигация">
+        <a href="#overview" class="nav-link is-active">Обзор</a>
+        <a href="#feed" class="nav-link">Новости</a>
+        <a href="#company-profile" class="nav-link">Профиль компании</a>
+        <a href="#ml-quality" class="nav-link">Качество ML</a>
+      </nav>
+      <div class="header-meta">
+        <span class="service-state" id="service-state"><span class="state-dot" aria-hidden="true"></span><span id="connection-label">Подключаемся</span></span>
+        <span class="header-date" id="today-date"></span>
+      </div>
+    </header>
 
-        <div class="workspace-label">РАБОЧЕЕ ПРОСТРАНСТВО</div>
-        <nav class="navigation" aria-label="Основная навигация">
-          <a class="nav-link active" href="#overview" data-view="overview" aria-current="page"><span class="nav-icon">⌂</span>Обзор</a>
-          <a class="nav-link" href="#feed" data-view="news"><span class="nav-icon">◷</span>Новостная лента</a>
-          <a class="nav-link" href="#company-card" data-view="company"><span class="nav-icon">▧</span>Моя компания</a>
-        </nav>
-
-        <div class="sidebar-bottom">
-          <div class="sidebar-note">
-            <span class="note-spark">✳</span>
-            <strong>Аналитика рядом</strong>
-            <p>Следите за тем, что влияет на ваш бизнес.</p>
-          </div>
-          <div class="sidebar-user">
-            <span class="avatar avatar-user">А</span>
-            <span class="user-copy"><strong>Аналитический центр</strong><small>Демонстрационный режим</small></span>
-          </div>
+    <main id="main-content" class="page-shell">
+      <section id="overview" class="intro-section" aria-labelledby="page-title">
+        <div class="intro-copy">
+          <p class="eyebrow">ДЕЛОВОЙ ОБЗОР <span aria-hidden="true">/</span> ПЕРСОНАЛЬНАЯ АНАЛИТИКА</p>
+          <h1 id="page-title">Новости в контексте бизнеса</h1>
+          <p class="intro-description">Отбираем события, которые могут быть важны для компании, и показываем, на чём основана оценка.</p>
         </div>
-      </aside>
+        <button class="button button-primary" id="refresh-button" type="button">
+          <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M16.7 8A6.9 6.9 0 0 0 4.5 5.5L3 7m0 0V3.8M3 7h3.2M3.3 12a6.9 6.9 0 0 0 12.2 2.5L17 13m0 0v3.2m0-3.2h-3.2"/></svg>
+          <span>Обновить новости</span>
+        </button>
+      </section>
 
-      <main class="main-content" id="overview" data-view="overview">
-        <header class="topbar">
-          <div class="breadcrumbs"><span>Рабочее пространство</span><span class="crumb-separator">/</span><strong>Обзор</strong></div>
-          <div class="topbar-right">
-            <span class="system-status"><i></i><span id="connection-label">Подключаемся</span></span>
-            <span class="topbar-date" id="today-date"></span>
+      <section class="control-panel" aria-label="Параметры персонализации">
+        <label class="company-search" for="company-search">
+          <span class="control-label">НАЙТИ КОМПАНИЮ</span>
+          <input id="company-search" name="company-search" type="search" minlength="2" placeholder="ID, отрасль или регион" autocomplete="off">
+        </label>
+        <label class="company-picker" for="company-select">
+          <span class="control-label">ВЫБРАТЬ ИЗ СПИСКА</span>
+          <select id="company-select" name="company">
+            <option value="">Загружаем список компаний…</option>
+          </select>
+        </label>
+        <span class="control-divider" aria-hidden="true"></span>
+        <fieldset class="role-picker">
+          <legend class="control-label">РОЛЬ</legend>
+          <div class="role-options">
+            <button class="role-option is-selected" type="button" data-role="ceo" aria-pressed="true">CEO</button>
+            <button class="role-option" type="button" data-role="cfo" aria-pressed="false">CFO</button>
           </div>
-        </header>
+        </fieldset>
+        <p class="personalization-note"><span aria-hidden="true">↳</span> Приоритеты ленты меняются вместе с ролью</p>
+      </section>
 
-        <section class="page-heading">
-          <div>
-            <div class="eyebrow"><span class="eyebrow-line"></span><span id="heading-kicker">ВАШ БИЗНЕС, В ФОКУСЕ</span></div>
-            <h1 id="page-title">Добро пожаловать<span class="heading-period">.</span></h1>
-            <p class="page-subtitle" id="page-subtitle">Важные новости и сигналы для решений — в одном месте.</p>
+      <section class="summary-grid" aria-label="Сводка">
+        <article class="summary-item">
+          <p class="summary-label">Материалов в ленте</p>
+          <p class="summary-value" id="metric-news">—</p>
+          <p class="summary-note">по выбранной компании</p>
+        </article>
+        <article class="summary-item">
+          <p class="summary-label">Высокая релевантность</p>
+          <p class="summary-value" id="metric-relevant">—</p>
+          <p class="summary-note">оценка 70% и выше</p>
+        </article>
+        <article class="summary-item summary-item-profile">
+          <div class="summary-profile-top">
+            <div><p class="summary-label">Полнота профиля</p><p class="summary-value"><span id="metric-profile">—</span><span class="summary-unit">%</span></p></div>
+            <span class="summary-caption" id="metric-role">CEO</span>
           </div>
-          <button class="button button-secondary refresh-button" id="refresh-button" type="button">
-            <span class="refresh-icon">↻</span><span>Обновить новости</span>
-          </button>
+          <div class="progress-track" aria-label="Полнота профиля компании"><span id="profile-progress"></span></div>
+          <p class="summary-note" id="metric-role-description">Данные для персонализации</p>
+        </article>
+      </section>
+
+      <div class="dashboard-grid">
+        <section id="feed" class="feed-section" aria-labelledby="feed-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">ПОСЛЕДНИЕ СОБЫТИЯ</p>
+              <div class="section-title-row"><h2 id="feed-title">Новостная лента</h2><span class="result-count" id="feed-count">0</span></div>
+              <p class="section-description">Сначала — публикации с наиболее явными связями с профилем.</p>
+            </div>
+            <label class="search-control" for="search-input">
+              <svg aria-hidden="true" viewBox="0 0 20 20"><circle cx="8.8" cy="8.8" r="5.5"/><path d="m13 13 4 4"/></svg>
+              <input id="search-input" type="search" name="news-search" placeholder="Поиск по ленте" autocomplete="off">
+            </label>
+          </div>
+          <div id="feed-list" class="feed-list" aria-live="polite" aria-busy="true">
+            <div class="loading-state"><span class="loading-indicator" aria-hidden="true"></span><span>Загружаем ленту…</span></div>
+          </div>
         </section>
 
-        <section class="toolbar" aria-label="Настройки персонализации">
-          <label class="select-field">
-            <span class="field-caption">КОМПАНИЯ</span>
-            <span class="select-wrap"><span class="select-symbol">▧</span>
-              <select id="company-select" aria-label="Выберите компанию"><option>Загрузка компаний…</option></select>
-              <span class="select-chevron">⌄</span>
-            </span>
-          </label>
-          <span class="toolbar-divider"></span>
-          <fieldset class="role-field">
-            <legend class="field-caption">МОЯ РОЛЬ</legend>
-            <div class="role-switch" role="group" aria-label="Выберите роль">
-              <button class="role-option selected" type="button" data-role="ceo" aria-pressed="true">CEO</button>
-              <button class="role-option" type="button" data-role="cfo" aria-pressed="false">CFO</button>
+        <aside id="company-profile" class="profile-column" aria-labelledby="profile-title">
+          <section class="profile-card">
+            <div class="profile-card-heading">
+              <p class="eyebrow">КОМПАНИЯ</p>
+              <span class="profile-completeness" id="profile-percent">—</span>
             </div>
-          </fieldset>
-          <span class="toolbar-hint"><span>✳</span> Лента адаптируется под вашу роль</span>
-        </section>
-
-        <section class="metrics-grid" aria-label="Ключевые показатели">
-          <article class="metric-card metric-card-accent">
-            <div class="metric-top"><span>Ваша лента</span><span class="metric-icon">◷</span></div>
-            <div class="metric-value" id="metric-news">—</div>
-            <div class="metric-foot"><span class="metric-dot"></span><span>актуальных материалов</span></div>
-          </article>
-          <article class="metric-card">
-            <div class="metric-top"><span>Профиль компании</span><span class="metric-icon metric-icon-green">▧</span></div>
-            <div class="metric-value"><span id="metric-profile">—</span><small>%</small></div>
-            <div class="metric-foot"><span class="metric-dot green-dot"></span><span>полнота данных</span></div>
-          </article>
-          <article class="metric-card">
-            <div class="metric-top"><span>Высокая релевантность</span><span class="metric-icon metric-icon-orange">↗</span></div>
-            <div class="metric-value" id="metric-relevant">—</div>
-            <div class="metric-foot"><span class="metric-dot orange-dot"></span><span>оценка от 70%</span></div>
-          </article>
-          <article class="metric-card">
-            <div class="metric-top"><span>Ваша роль</span><span class="metric-icon metric-icon-purple">◎</span></div>
-            <div class="metric-value metric-role-value" id="metric-role">CEO</div>
-            <div class="metric-foot"><span class="metric-dot purple-dot"></span><span id="metric-role-description">стратегия и рост</span></div>
-          </article>
-        </section>
-
-        <div class="content-grid">
-          <section class="feed-section" id="feed">
-            <div class="section-heading">
-              <div>
-                <div class="section-kicker">ВАЖНОЕ ДЛЯ ВАС</div>
-                <h2>Новостная лента <span class="heading-count" id="feed-count">0</span></h2>
-                <p>Материалы отсортированы по значимости для вашей компании.</p>
-              </div>
-              <label class="search-box">
-                <span aria-hidden="true">⌕</span>
-                <input id="search-input" type="search" placeholder="Найти новость" aria-label="Найти новость">
-              </label>
-            </div>
-            <div class="feed-list" id="feed-list" aria-live="polite">
-              <div class="loading-state"><span class="spinner"></span>Загружаем вашу ленту…</div>
-            </div>
+            <h2 id="profile-title">Загружаем профиль…</h2>
+            <p class="profile-industry" id="company-industry">Данные из набора кейса</p>
+            <div class="profile-divider"></div>
+            <dl class="profile-facts">
+              <div><dt>Регион</dt><dd id="company-region">—</dd></div>
+              <div><dt>Выручка</dt><dd id="company-revenue">—</dd></div>
+              <div><dt>ОКВЭД</dt><dd id="company-okved">—</dd></div>
+              <div><dt>Группа компаний</dt><dd id="company-group">—</dd></div>
+              <div><dt>Страны ВЭД</dt><dd id="company-trade-countries">—</dd></div>
+              <div><dt>Возраст бизнеса</dt><dd id="company-age">—</dd></div>
+              <div><dt>Стадия</dt><dd id="company-stage">—</dd></div>
+              <div><dt>Сотрудники</dt><dd id="company-workers">—</dd></div>
+            </dl>
+            <div class="profile-progress-caption"><span>Заполненность данных</span><span id="profile-percent-label">—</span></div>
+            <div class="progress-track"><span id="profile-progress-detail"></span></div>
+            <p class="profile-help">Пустые поля не интерпретируются как отсутствие продукта.</p>
           </section>
 
-          <aside class="right-column">
-            <section class="company-card" id="company-card">
-              <div class="company-card-top"><span class="company-card-label">ВАША КОМПАНИЯ</span></div>
-              <div class="company-identity">
-                <div class="company-avatar" id="company-avatar">А</div>
-                <div class="company-title-wrap"><h3 id="company-name">Загрузка…</h3><span class="company-tag" id="company-industry">Профиль бизнеса</span></div>
-              </div>
-              <div class="company-info-list">
-                <div class="company-info-row"><span>Регион</span><strong id="company-region">—</strong></div>
-                <div class="company-info-row"><span>Выручка</span><strong id="company-revenue">—</strong></div>
-                <div class="company-info-row"><span>Код ОКВЭД</span><strong id="company-okved">—</strong></div>
-              </div>
-              <div class="profile-completeness">
-                <div class="completeness-label"><span>Заполненность профиля</span><strong id="profile-percent">—</strong></div>
-                <div class="progress-track"><span id="profile-progress"></span></div>
-                <p>Больше данных — точнее персональная лента.</p>
-              </div>
-            </section>
+          <section class="profile-card data-card" aria-labelledby="business-data-title">
+            <div class="panel-heading"><h3 id="business-data-title">Финансовые признаки</h3><span class="panel-index">01</span></div>
+            <dl class="profile-facts compact-facts">
+              <div><dt>Кредиты</dt><dd id="detail-loans">—</dd></div>
+              <div><dt>Лизинг</dt><dd id="detail-leasing">—</dd></div>
+              <div><dt>Гарантии</dt><dd id="detail-guarantees">—</dd></div>
+              <div><dt>Депозиты</dt><dd id="detail-deposits">—</dd></div>
+              <div><dt>Факторинг</dt><dd id="detail-factoring">—</dd></div>
+              <div><dt>Внешняя торговля</dt><dd id="detail-trade">—</dd></div>
+            </dl>
+          </section>
 
-            <section class="insight-promo">
-              <div class="promo-decoration">✳</div>
-              <div class="promo-label">УМНЫЙ ИНСАЙТ</div>
-              <h3>Новость — это только начало.</h3>
-              <p>Узнайте, что событие значит именно для вашей компании.</p>
-              <button class="promo-action" id="promo-news-button" type="button">Перейти к новостям <span>↗</span></button>
-            </section>
+          <section class="profile-card data-card" aria-labelledby="payments-title">
+            <div class="panel-heading"><h3 id="payments-title">Платежи по CSV</h3><span class="panel-index">02</span></div>
+            <dl class="profile-facts compact-facts">
+              <div><dt>Входящие</dt><dd id="payment-incoming">—</dd></div>
+              <div><dt>Исходящие</dt><dd id="payment-outgoing">—</dd></div>
+              <div><dt>Контрагенты</dt><dd id="payment-counterparties">—</dd></div>
+            </dl>
+            <p class="profile-help">Суммы рассчитаны по предоставленным строкам платежного набора.</p>
+            <p class="profile-help" id="payment-quality"></p>
+          </section>
 
-            <div class="disclaimer"><span>ⓘ</span><p>Демонстрационная аналитика. Оценки носят информационный характер и не являются финансовой рекомендацией.</p></div>
-          </aside>
-        </div>
+          <section class="profile-card data-card" aria-labelledby="relations-title">
+            <div class="panel-heading"><h3 id="relations-title">Связи компании</h3><span class="panel-index">03</span></div>
+            <dl class="profile-facts compact-facts">
+              <div><dt>В группе</dt><dd id="group-company-count">—</dd></div>
+              <div><dt>По связям</dt><dd id="linked-company-count">—</dd></div>
+              <div><dt>Контрагенты</dt><dd id="relation-counterparty-count">—</dd></div>
+            </dl>
+            <details class="missing-details">
+              <summary>Показать ID связанных компаний</summary>
+              <div class="profile-tags relation-tags" id="company-relations"></div>
+            </details>
+            <p class="profile-help" id="relation-sources"></p>
+          </section>
 
-        <section class="company-details-section" id="company-details">
-          <div class="section-kicker">ДАННЫЕ И ФАКТОРЫ</div>
-          <h2>Профиль компании</h2>
-          <p class="details-intro">Параметры, которые используются для персонализации ленты. Неизвестные значения не додумываются.</p>
-          <div class="company-details-grid">
-            <article class="details-panel">
-              <h3>Финансовые и деловые факторы</h3>
-              <div class="details-row"><span>Кредиты</span><strong id="detail-loans">—</strong></div>
-              <div class="details-row"><span>Лизинг</span><strong id="detail-leasing">—</strong></div>
-              <div class="details-row"><span>Гарантии</span><strong id="detail-guarantees">—</strong></div>
-              <div class="details-row"><span>Внешняя торговля</span><strong id="detail-trade">—</strong></div>
-              <div class="details-row"><span>Страны торговли</span><strong id="detail-countries">—</strong></div>
-              <div class="details-row"><span>Группа компаний</span><strong id="detail-group">—</strong></div>
-            </article>
-            <article class="details-panel">
-              <h3>Полнота исходных данных</h3>
-              <div class="details-fields">
-                <div><span class="details-fields-label">ИЗВЕСТНО</span><div class="field-tags" id="known-fields"></div></div>
-                <div><span class="details-fields-label">НЕ УКАЗАНО</span><div class="field-tags missing-tags" id="missing-fields"></div></div>
-              </div>
-            </article>
+          <section class="profile-card data-card" aria-labelledby="coverage-title">
+            <div class="panel-heading"><h3 id="coverage-title">Полнота профиля</h3><span class="panel-index">04</span></div>
+            <p class="coverage-label">УЧТЕНО В ПРОФИЛЕ</p>
+            <div class="profile-tags" id="known-fields"><span class="profile-tag">Загружаем…</span></div>
+            <details class="missing-details">
+              <summary>Поля без данных <span id="missing-count"></span></summary>
+              <div class="profile-tags" id="missing-fields"></div>
+            </details>
+            <details class="missing-details">
+              <summary>Проверки и источники данных</summary>
+              <p class="profile-help" id="invalid-fields"></p>
+              <ul class="uncertainty-list" id="profile-uncertainties"></ul>
+              <dl class="field-source-list" id="field-sources"></dl>
+            </details>
+          </section>
+
+          <section class="caveat-note">
+            <span class="caveat-mark" aria-hidden="true">i</span>
+            <p>Информационная аналитика на обезличенных данных. Не является финансовой рекомендацией.</p>
+          </section>
+        </aside>
+      </div>
+      <section id="ml-quality" class="ml-quality-section" aria-labelledby="ml-quality-title">
+        <div class="ml-quality-heading">
+          <div>
+            <p class="eyebrow">ПРОВЕРКА ПЕРСОНАЛИЗАЦИИ</p>
+            <h2 id="ml-quality-title">Качество данных и ML</h2>
+            <p class="section-description">Проверка CSV, профилей, правил ранжирования и размеченного контрольного набора.</p>
           </div>
-        </section>
+          <button class="button button-secondary" id="ml-quality-button" type="button">Проверить качество</button>
+        </div>
+        <p class="ml-quality-note">Контрольный набор синтетический и размечен авторами проекта. Его метрики помогают замечать изменения алгоритма, но не показывают точность на реальных новостях.</p>
+        <div id="ml-quality-status" class="ml-quality-status" role="status" aria-live="polite">Отчёт загружается только по запросу.</div>
+        <div id="ml-quality-report" class="ml-quality-report" aria-busy="false"></div>
+      </section>
+      <footer class="page-footer"><span>АЛЬФА · ДЕЛОВАЯ АНАЛИТИКА</span><span>Оценка сопровождается факторами и источниками данных</span></footer>
+    </main>
 
-        <footer class="page-footer"><span>АЛЬФА БИЗНЕС · ДЕМО</span><span>Персональная аналитика для решений</span></footer>
-      </main>
-    </div>
-
-    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+    <div class="toast-region" id="toast-region" role="status" aria-live="polite" aria-atomic="false"></div>
 
     <dialog class="article-dialog" id="article-dialog" aria-labelledby="dialog-title">
-      <div class="dialog-topbar"><span class="dialog-brand"><span class="mini-brand-mark">а</span> АНАЛИТИКА ДЛЯ ВАС</span><button class="icon-button" id="close-dialog" type="button" aria-label="Закрыть">×</button></div>
+      <div class="dialog-header">
+        <div><p class="eyebrow">РАЗБОР СОБЫТИЯ</p><p class="dialog-subtitle" id="dialog-subtitle">Новость и её связь с бизнесом</p></div>
+        <button class="icon-button" id="close-dialog" type="button" aria-label="Закрыть разбор">×</button>
+      </div>
       <div class="dialog-content" id="dialog-content"></div>
     </dialog>
   </body>
