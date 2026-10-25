@@ -19,5 +19,3 @@ Python 3.12, зависимости общие с проектом. Тесты �
 ```bash
 python -m pytest -q
 ```
-
-Подробное описание полей и алгоритмов — в [EXPLANATION.md](EXPLANATION.md).
